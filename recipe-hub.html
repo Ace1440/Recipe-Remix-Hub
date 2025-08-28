@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Remix Hub - Transform Your Ingredients Into Delicious Recipes</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Turn your available ingredients into amazing recipes instantly! Recipe Remix Hub helps you create delicious meals from what you have at home. Save recipes and never waste food again.">
+    <meta name="keywords" content="recipe generator, cooking, ingredients, food, recipes, meal planning, cooking app, recipe finder">
+    <meta name="author" content="Recipe Remix Hub">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ace1440.github.io/Recipe-Remix-Hub/">
+    <meta property="og:title" content="Recipe Remix Hub - Transform Your Ingredients Into Delicious Recipes">
+    <meta property="og:description" content="Turn your available ingredients into amazing recipes instantly! Never waste food again.">
+    <meta property="og:image" content="https://ace1440.github.io/Recipe-Remix-Hub/preview.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ace1440.github.io/Recipe-Remix-Hub/">
+    <meta property="twitter:title" content="Recipe Remix Hub - Transform Your Ingredients Into Delicious Recipes">
+    <meta property="twitter:description" content="Turn your available ingredients into amazing recipes instantly! Never waste food again.">
+    <meta property="twitter:image" content="https://ace1440.github.io/Recipe-Remix-Hub/preview.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍳</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #87CEEB 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-card {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(135, 206, 235, 0.3);
+            margin-bottom: 30px;
+            border: 1px solid #87CEEB;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-section h2 {
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .ingredient-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .ingredient-input input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #87CEEB;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+        }
+
+        .ingredient-input input::placeholder {
+            color: #87CEEB;
+        }
+
+        .ingredient-input button {
+            padding: 15px 25px;
+            background: #87CEEB;
+            color: black;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .ingredient-input button:hover {
+            background: #4682B4;
+            color: white;
+        }
+
+        .ingredients-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .ingredient-tag {
+            background: rgba(135, 206, 235, 0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid #87CEEB;
+        }
+
+        .ingredient-tag button {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #000000 0%, #87CEEB 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 2px solid #87CEEB;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .recipes-section {
+            display: none;
+        }
+
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .recipe-card {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2);
+            transition: transform 0.3s;
+            border: 1px solid #87CEEB;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .recipe-header {
+            background: linear-gradient(135deg, #000000, #87CEEB);
+            color: white;
+            padding: 20px;
+        }
+
+        .recipe-header h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .recipe-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+
+        .difficulty {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .difficulty.easy { background: #48bb78; }
+        .difficulty.medium { background: #ed8936; }
+        .difficulty.hard { background: #e53e3e; }
+
+        .recipe-content {
+            padding: 20px;
+            color: white;
+        }
+
+        .recipe-content h4 {
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .recipe-content ul, .recipe-content ol {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        .recipe-content li {
+            margin-bottom: 5px;
+        }
+
+        .available {
+            color: #87CEEB;
+            font-weight: bold;
+        }
+
+        .recipe-actions {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .save-btn {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #c53030;
+        }
+
+        .shopping-btn {
+            background: #38b2ac;
+            color: white;
+        }
+
+        .shopping-btn:hover {
+            background: #319795;
+        }
+
+        .saved-recipes-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #87CEEB;
+            color: black;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            border: 2px solid #000000;
+        }
+
+        .saved-count {
+            background: #e53e3e;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal.hidden {
+            display: none !important;
+        }
+
+        .modal-content {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 20px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(135, 206, 235, 0.3);
+            border: 2px solid #87CEEB;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #000000 0%, #87CEEB 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .saved-recipe {
+            padding: 20px 30px;
+            border-bottom: 1px solid #87CEEB;
+            color: white;
+        }
+
+        .saved-recipe:last-child {
+            border-bottom: none;
+        }
+
+        .saved-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .remove-btn {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .empty-saved {
+            text-align: center;
+            padding: 60px 30px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-card {
+                padding: 20px;
+            }
+            
+            .ingredient-input {
+                flex-direction: column;
+            }
+            
+            .recipes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .saved-recipes-btn {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Saved Recipes Button -->
+    <button class="saved-recipes-btn" onclick="openSavedRecipes()">
+        📖 Saved Recipes
+        <span class="saved-count" id="savedCount">0</span>
+    </button>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🍳 Recipe Remix Hub</h1>
+            <p>Transform your ingredients into delicious recipes</p>
+        </div>
+
+        <!-- Main Input Card -->
+        <div class="main-card">
+            <div class="input-section">
+                <h2>What ingredients do you have?</h2>
+                <div class="ingredient-input">
+                    <input type="text" id="ingredientInput" placeholder="Enter an ingredient (e.g., tomato, chicken, pasta...)" />
+                    <button onclick="addIngredient()">Add</button>
+                </div>
+                
+                <div class="ingredients-list" id="ingredientsList"></div>
+                
+                <button class="generate-btn" id="generateBtn" onclick="generateRecipes()" disabled>
+                    Generate Recipes
+                </button>
+            </div>
+        </div>
+
+        <!-- Recipes Section -->
+        <div class="recipes-section" id="recipesSection">
+            <div class="main-card">
+                <h2 id="recipesTitle">Your Recipes</h2>
+                <div class="recipes-grid" id="recipesGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Saved Recipes Modal -->
+    <div class="modal hidden" id="savedModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📖 Your Saved Recipes</h2>
+                <button class="close-btn" onclick="closeSavedRecipes()">&times;</button>
+            </div>
+            <div id="savedList"></div>
+        </div>
+    </div>
+
+    <script>
+        let ingredients = [];
+        let savedRecipes = JSON.parse(localStorage.getItem('savedRecipes')) || [];
+        let currentRecipes = [];
+
+        // Update saved count on load
+        updateSavedCount();
+
+        function updateSavedCount() {
+            document.getElementById('savedCount').textContent = savedRecipes.length;
+        }
+
+        function addIngredient() {
+            const input = document.getElementById('ingredientInput');
+            const value = input.value.trim().toLowerCase();
+            
+            if (value && !ingredients.includes(value)) {
+                ingredients.push(value);
+                input.value = '';
+                updateIngredientsDisplay();
+                updateGenerateButton();
+            }
+        }
+
+        function removeIngredient(ingredient) {
+            ingredients = ingredients.filter(ing => ing !== ingredient);
+            updateIngredientsDisplay();
+            updateGenerateButton();
+        }
+
+        function updateIngredientsDisplay() {
+            const list = document.getElementById('ingredientsList');
+            list.innerHTML = ingredients.map(ingredient => 
+                `<div class="ingredient-tag">
+                    ${ingredient}
+                    <button onclick="removeIngredient('${ingredient}')">×</button>
+                </div>`
+            ).join('');
+        }
+
+        function updateGenerateButton() {
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = ingredients.length === 0;
+        }
+
+        function generateRecipes() {
+            if (ingredients.length === 0) return;
+
+            const recipes = createRecipes(ingredients);
+            currentRecipes = recipes;
+            displayRecipes(recipes);
+        }
+
+        function createRecipes(userIngredients) {
+            const recipes = [];
+            
+            // Simple recipe templates
+            const templates = [
+                {
+                    name: 'Pan-Fried {main} with {vegetable}',
+                    difficulty: 'Easy',
+                    time: 20,
+                    ingredients: ['{main}', '{vegetable}', 'Salt', 'Pepper', 'Oil'],
+                    instructions: [
+                        'Heat oil in a large pan over medium heat',
+                        'Season {main} with salt and pepper',
+                        'Cook {main} for 5-7 minutes until golden',
+                        'Add {vegetable} and cook for another 8-10 minutes',
+                        'Serve hot and enjoy!'
+                    ]
+                },
+                {
+                    name: '{main} and {vegetable} Stir-fry',
+                    difficulty: 'Easy',
+                    time: 15,
+                    ingredients: ['{main}', '{vegetable}', 'Soy sauce', 'Garlic', 'Ginger', 'Oil'],
+                    instructions: [
+                        'Heat oil in a wok or large pan',
+                        'Add garlic and ginger, stir-fry for 1 minute',
+                        'Add {main} and cook for 5 minutes',
+                        'Add {vegetable} and stir-fry for 3-5 minutes',
+                        'Add soy sauce and toss everything together',
+                        'Serve immediately over rice'
+                    ]
+                },
+                {
+                    name: 'Baked {main} with Roasted {vegetable}',
+                    difficulty: 'Medium',
+                    time: 45,
+                    ingredients: ['{main}', '{vegetable}', 'Olive oil', 'Herbs', 'Salt', 'Pepper'],
+                    instructions: [
+                        'Preheat oven to 400°F (200°C)',
+                        'Season {main} with salt, pepper, and herbs',
+                        'Toss {vegetable} with olive oil and seasonings',
+                        'Place everything on a baking sheet',
+                        'Bake for 30-40 minutes until tender',
+                        'Let rest for 5 minutes before serving'
+                    ]
+                }
+            ];
+
+            // Find main ingredient and vegetables
+            const mains = userIngredients.filter(ing => 
+                ['chicken', 'beef', 'pork', 'fish', 'salmon', 'tuna', 'eggs', 'tofu'].some(main => 
+                    ing.includes(main) || main.includes(ing)
+                )
+            );
+            
+            const vegetables = userIngredients.filter(ing => 
+                ['potato', 'carrot', 'onion', 'broccoli', 'spinach', 'tomato', 'pepper', 'mushroom', 'zucchini'].some(veg => 
+                    ing.includes(veg) || veg.includes(ing)
+                )
+            );
+
+            // Generate recipes based on available ingredients
+            templates.forEach((template, index) => {
+                const main = mains[0] || userIngredients[0] || 'protein';
+                const vegetable = vegetables[0] || userIngredients[1] || 'vegetables';
+                
+                const recipe = {
+                    id: `recipe-${index}-${Date.now()}`,
+                    title: template.name.replace('{main}', main).replace('{vegetable}', vegetable),
+                    difficulty: template.difficulty,
+                    cookingTime: template.time,
+                    ingredients: template.ingredients.map(ing => 
+                        ing.replace('{main}', main).replace('{vegetable}', vegetable)
+                    ),
+                    instructions: template.instructions.map(inst => 
+                        inst.replace('{main}', main).replace('{vegetable}', vegetable)
+                    )
+                };
+                
+                recipes.push(recipe);
+            });
+
+            return recipes.slice(0, 3); // Return max 3 recipes
+        }
+
+        function displayRecipes(recipes) {
+            const section = document.getElementById('recipesSection');
+            const title = document.getElementById('recipesTitle');
+            const grid = document.getElementById('recipesGrid');
+
+            title.textContent = `Recipes for you (${recipes.length} found)`;
+            
+            grid.innerHTML = recipes.map(recipe => `
+                <div class="recipe-card">
+                    <div class="recipe-header">
+                        <h3>${recipe.title}</h3>
+                        <div class="recipe-meta">
+                            <span class="difficulty ${recipe.difficulty.toLowerCase()}">${recipe.difficulty}</span>
+                            <span>⏱️ ${recipe.cookingTime} min</span>
+                        </div>
+                    </div>
+                    
+                    <div class="recipe-content">
+                        <h4>Ingredients:</h4>
+                        <ul>
+                            ${recipe.ingredients.map(ing => {
+                                const available = ingredients.some(userIng => 
+                                    ing.toLowerCase().includes(userIng) || userIng.includes(ing.toLowerCase())
+                                );
+                                return `<li class="${available ? 'available' : ''}">${ing}${available ? ' ✓' : ''}</li>`;
+                            }).join('')}
+                        </ul>
+                        
+                        <h4>Instructions:</h4>
+                        <ol>
+                            ${recipe.instructions.map(inst => `<li>${inst}</li>`).join('')}
+                        </ol>
+                    </div>
+                    
+                    <div class="recipe-actions">
+                        <button class="action-btn shopping-btn" onclick="addToShopping('${recipe.id}')">
+                            🛒 Shopping List
+                        </button>
+                        <button class="action-btn save-btn" onclick="saveRecipe('${recipe.id}')">
+                            ❤️ Save Recipe
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            section.style.display = 'block';
+        }
+
+        function saveRecipe(recipeId) {
+            const recipe = currentRecipes.find(r => r.id === recipeId);
+            if (!recipe) return;
+
+            if (savedRecipes.some(saved => saved.id === recipeId)) {
+                alert('Recipe already saved!');
+                return;
+            }
+
+            const savedRecipe = {
+                ...recipe,
+                savedAt: new Date().toISOString(),
+                originalIngredients: [...ingredients]
+            };
+
+            savedRecipes.push(savedRecipe);
+            localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
+            updateSavedCount();
+            alert('Recipe saved! 📖');
+        }
+
+        function openSavedRecipes() {
+            const modal = document.getElementById('savedModal');
+            const list = document.getElementById('savedList');
+
+            if (savedRecipes.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-saved">
+                        <h3>No saved recipes yet</h3>
+                        <p>Save some recipes to see them here!</p>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = savedRecipes.map(recipe => `
+                    <div class="saved-recipe">
+                        <div class="saved-header">
+                            <h3>${recipe.title}</h3>
+                            <button class="remove-btn" onclick="removeSavedRecipe('${recipe.id}')">Remove</button>
+                        </div>
+                        
+                        <div class="recipe-meta">
+                            <span class="difficulty ${recipe.difficulty.toLowerCase()}">${recipe.difficulty}</span>
+                            <span>⏱️ ${recipe.cookingTime} min</span>
+                            <span>💾 Saved: ${new Date(recipe.savedAt).toLocaleDateString()}</span>
+                        </div>
+                        
+                        <h4>Ingredients:</h4>
+                        <ul>
+                            ${recipe.ingredients.map(ing => `<li>${ing}</li>`).join('')}
+                        </ul>
+                        
+                        <h4>Instructions:</h4>
+                        <ol>
+                            ${recipe.instructions.map(inst => `<li>${inst}</li>`).join('')}
+                        </ol>
+                    </div>
+                `).join('');
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeSavedRecipes() {
+            document.getElementById('savedModal').classList.add('hidden');
+        }
+
+        function removeSavedRecipe(recipeId) {
+            if (confirm('Remove this saved recipe?')) {
+                savedRecipes = savedRecipes.filter(recipe => recipe.id !== recipeId);
+                localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
+                updateSavedCount();
+                openSavedRecipes(); // Refresh modal
+            }
+        }
+
+        function addToShopping(recipeId) {
+            alert('Shopping list feature coming soon! 🛒');
+        }
+
+        // Enter key support
+        document.getElementById('ingredientInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addIngredient();
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('savedModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSavedRecipes();
+            }
+        });
+    </script>
+</body>
+</html>
